@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="AI-enhanced qualitative work management for architecture projects">
+  <title>ArchPlan AI</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ── Splash / Onboarding ── -->
+  <div id="splash-screen" class="screen active">
+    <div class="splash-content">
+      <div class="splash-icon">
+        <svg viewBox="0 0 80 80" fill="none">
+          <rect width="80" height="80" rx="20" fill="url(#splash-grad)"/>
+          <path d="M20 55 L40 20 L60 55 Z" stroke="#fff" stroke-width="2.5" fill="none"/>
+          <circle cx="40" cy="38" r="4" fill="#fff" opacity="0.9"/>
+          <line x1="28" y1="45" x2="52" y2="45" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
+          <defs>
+            <linearGradient id="splash-grad" x1="0" y1="0" x2="80" y2="80">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h1 class="splash-title">ArchPlan AI</h1>
+      <p class="splash-subtitle">Qualitative intelligence for architecture work</p>
+      <button id="btn-get-started" class="btn-primary btn-large">Get Started</button>
+    </div>
+  </div>
+
+  <!-- ── New Project Flow ── -->
+  <div id="new-project-screen" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" data-back="home"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+      <h2>New Project</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="screen-body">
+      <div class="form-section">
+        <label class="form-label">Project Name</label>
+        <input type="text" id="project-name" class="form-input" placeholder="e.g., Riverside Community Center">
+
+        <label class="form-label">Site Context</label>
+        <div class="chip-group" id="site-type-chips">
+          <button class="chip" data-value="greenfield">Greenfield</button>
+          <button class="chip" data-value="urban_infill">Urban Infill</button>
+          <button class="chip" data-value="suburban">Suburban</button>
+          <button class="chip" data-value="renovation">Renovation</button>
+          <button class="chip" data-value="adaptive_reuse">Adaptive Reuse</button>
+        </div>
+
+        <label class="form-label">Program Type</label>
+        <div class="chip-group" id="program-type-chips">
+          <button class="chip" data-value="residential_single">Single Residential</button>
+          <button class="chip" data-value="residential_multi">Multi-Residential</button>
+          <button class="chip" data-value="commercial">Commercial</button>
+          <button class="chip" data-value="institutional">Institutional</button>
+          <button class="chip" data-value="mixed_use">Mixed Use</button>
+          <button class="chip" data-value="healthcare">Healthcare</button>
+        </div>
+
+        <label class="form-label">Team Structure</label>
+        <div class="chip-group" id="team-type-chips">
+          <button class="chip" data-value="solo">Solo</button>
+          <button class="chip" data-value="small_team">Small Team</button>
+          <button class="chip" data-value="multi_office">Multi-Office</button>
+          <button class="chip" data-value="joint_venture">Joint Venture</button>
+        </div>
+
+        <label class="form-label">Target Completion</label>
+        <input type="date" id="project-target-date" class="form-input">
+
+        <label class="form-label">Starting Phase</label>
+        <div class="phase-selector" id="phase-selector"></div>
+      </div>
+
+      <button id="btn-create-project" class="btn-primary btn-large" disabled>
+        Create Project with AI Plan
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Home / Dashboard ── -->
+  <div id="home-screen" class="screen">
+    <div class="screen-header home-header">
+      <div>
+        <p class="greeting" id="greeting"></p>
+        <h2 class="home-title">Your Projects</h2>
+      </div>
+      <button id="btn-new-project" class="btn-icon">
+        <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="screen-body" id="home-body">
+      <div id="project-list" class="project-list"></div>
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <div class="empty-icon">
+          <svg viewBox="0 0 64 64" width="64" height="64">
+            <rect x="8" y="16" width="48" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+            <path d="M24 8h16l4 8H20l4-8z" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+            <path d="M28 32h8M32 28v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <p>No projects yet</p>
+        <p class="empty-sub">Create your first project and let AI help you plan it</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Project Detail ── -->
+  <div id="project-screen" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" data-back="home"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+      <h2 id="project-detail-title">Project</h2>
+      <button id="btn-project-menu" class="btn-icon-sm">
+        <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab active" data-tab="tasks">Tasks</button>
+      <button class="tab" data-tab="insights">AI Insights</button>
+      <button class="tab" data-tab="plan">Weekly Plan</button>
+    </div>
+
+    <div class="screen-body tab-body">
+      <!-- Tasks Tab -->
+      <div id="tab-tasks" class="tab-content active">
+        <div class="task-filters">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="todo">To Do</button>
+          <button class="filter-chip" data-filter="in_progress">In Progress</button>
+          <button class="filter-chip" data-filter="blocked">Blocked</button>
+          <button class="filter-chip" data-filter="done">Done</button>
+        </div>
+        <div id="task-list" class="task-list"></div>
+        <button id="btn-add-task" class="fab">
+          <svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <!-- AI Insights Tab -->
+      <div id="tab-insights" class="tab-content">
+        <div id="insights-container" class="insights-container"></div>
+      </div>
+
+      <!-- Weekly Plan Tab -->
+      <div id="tab-plan" class="tab-content">
+        <div id="weekly-plan-container" class="weekly-plan-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Task Detail / Edit ── -->
+  <div id="task-screen" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" data-back="project"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+      <h2>Task</h2>
+      <button id="btn-save-task" class="btn-text">Save</button>
+    </div>
+    <div class="screen-body">
+      <div class="form-section">
+        <input type="text" id="task-title" class="form-input form-input-large" placeholder="Task title">
+
+        <label class="form-label">Status</label>
+        <div class="chip-group" id="task-status-chips">
+          <button class="chip" data-value="todo">To Do</button>
+          <button class="chip" data-value="in_progress">In Progress</button>
+          <button class="chip" data-value="blocked">Blocked</button>
+          <button class="chip" data-value="done">Done</button>
+        </div>
+
+        <div id="blocked-reason-group" style="display:none;">
+          <label class="form-label">Blocked By</label>
+          <input type="text" id="task-blocked-reason" class="form-input" placeholder="What's blocking this?">
+        </div>
+
+        <label class="form-label">Priority</label>
+        <div class="chip-group" id="task-priority-chips">
+          <button class="chip" data-value="low">Low</button>
+          <button class="chip" data-value="medium">Medium</button>
+          <button class="chip" data-value="high">High</button>
+        </div>
+
+        <label class="form-label">Due Date</label>
+        <input type="date" id="task-due-date" class="form-input">
+
+        <label class="form-label">Notes</label>
+        <textarea id="task-notes" class="form-input form-textarea" placeholder="Add notes..." rows="3"></textarea>
+
+        <!-- AI Insight for this task -->
+        <div id="task-ai-note" class="ai-note-card" style="display:none;">
+          <div class="ai-note-header">
+            <span class="ai-badge">AI Insight</span>
+          </div>
+          <p id="task-ai-note-text"></p>
+        </div>
+      </div>
+
+      <button id="btn-delete-task" class="btn-danger" style="display:none;">Delete Task</button>
+    </div>
+  </div>
+
+  <!-- ── Complexity Report ── -->
+  <div id="complexity-screen" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" data-back="project"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg></button>
+      <h2>Complexity Assessment</h2>
+      <div class="header-spacer"></div>
+    </div>
+    <div class="screen-body" id="complexity-body"></div>
+  </div>
+
+  <!-- ── Project Menu Modal ── -->
+  <div id="project-menu-modal" class="modal" style="display:none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <button class="modal-option" data-action="complexity">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        Complexity Assessment
+      </button>
+      <button class="modal-option" data-action="generate-tasks">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        Generate AI Tasks for Phase
+      </button>
+      <button class="modal-option" data-action="advance-phase">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        Advance to Next Phase
+      </button>
+      <button class="modal-option danger" data-action="delete-project">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 6h18M8 6V4h8v2M10 11v6M14 11v6M5 6l1 14h12l1-14" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        Delete Project
+      </button>
+      <button class="modal-option cancel" data-action="cancel">Cancel</button>
+    </div>
+  </div>
+
+  <script src="ai-planner.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

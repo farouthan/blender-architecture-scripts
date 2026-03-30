@@ -1,0 +1,32 @@
+{
+  "name": "ArchPlan AI — Architecture Work Management",
+  "short_name": "ArchPlan AI",
+  "description": "AI-enhanced qualitative work management for architecture projects",
+  "start_url": "/work-management/index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "New Project",
+      "url": "/work-management/index.html#new-project",
+      "description": "Start a new architecture project"
+    },
+    {
+      "name": "AI Insights",
+      "url": "/work-management/index.html#insights",
+      "description": "View AI planning insights"
+    }
+  ]
+}
