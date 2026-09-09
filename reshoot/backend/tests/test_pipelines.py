@@ -118,3 +118,37 @@ def test_body_from_bbox_rejects_a_box_above_the_horizon():
     body, warning = body_from_bbox(cam, (400, 20, 500, horizon - 30), "b2")
     assert body is None
     assert "horizon" in warning
+
+
+@pytest.mark.parametrize("yaw_deg", [0.0, 20.0, -35.0, 70.0])
+def test_footprint_yaw_uses_the_threejs_convention(yaw_deg):
+    """A box rotated by `rotation.y = yaw` must be recovered with that yaw.
+
+    Rotation about +y sends a mesh's local +x to world (cos yaw, 0, -sin yaw),
+    so the viewer can apply the returned angle directly with no sign fixing.
+    """
+    from reshoot.pipelines.proxy import _oriented_footprint
+
+    yaw = math.radians(yaw_deg)
+    half_a, half_b = 0.9, 0.3
+    rng = np.random.default_rng(11)
+    local = np.stack(
+        [rng.uniform(-half_a, half_a, 4000), rng.uniform(-half_b, half_b, 4000)], axis=1
+    )
+    centre = np.array([1.4, -2.1])
+    # local (x, z) -> world (x cos + z sin, -x sin + z cos)
+    world = np.stack(
+        [
+            local[:, 0] * math.cos(yaw) + local[:, 1] * math.sin(yaw),
+            -local[:, 0] * math.sin(yaw) + local[:, 1] * math.cos(yaw),
+        ],
+        axis=1,
+    ) + centre
+
+    found_centre, found_yaw, ext_a, ext_b = _oriented_footprint(world)
+    assert found_centre == pytest.approx(centre, abs=0.02)
+    assert max(ext_a, ext_b) == pytest.approx(2 * half_a, abs=0.05)
+    assert min(ext_a, ext_b) == pytest.approx(2 * half_b, abs=0.05)
+    # The rectangle is symmetric, so the yaw is only defined modulo pi.
+    delta = (found_yaw - yaw + math.pi / 2) % math.pi - math.pi / 2
+    assert abs(delta) < math.radians(3.0), f"{math.degrees(found_yaw)} vs {yaw_deg}"

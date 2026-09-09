@@ -210,9 +210,9 @@ def rotation_from_vanishing_points(
     if y_cam[1] < 0.0:
         z_cam = -z_cam
         y_cam = _unit(np.cross(z_cam, x_cam))
-    # Re-orthogonalise against accumulated float error.
+    # Re-orthogonalise against accumulated float error.  The frame stays right
+    # handed because each axis is rebuilt from the cross product of the other two.
     z_cam = _unit(np.cross(x_cam, y_cam))
-    z_cam = -z_cam if float(np.dot(z_cam, np.cross(x_cam, y_cam))) < 0 else z_cam
     x_cam = _unit(np.cross(y_cam, z_cam))
     # Columns are the world axes in camera space.
     return np.stack([x_cam, y_cam, z_cam], axis=1)

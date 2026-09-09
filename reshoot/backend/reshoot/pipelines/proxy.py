@@ -115,10 +115,16 @@ def fit_to_ground(
 
 
 def _oriented_footprint(xz: np.ndarray) -> tuple[np.ndarray, float, float, float]:
-    """Minimum-area-ish oriented rectangle of a 2D point set.
+    """Minimum-area oriented rectangle of a footprint in the world XZ plane.
 
-    Returns ``(centre, yaw, size_along_major, size_along_minor)``.  Rotating
-    calipers over PCA plus a small angle sweep is plenty for a proxy box.
+    Returns ``(centre, yaw, size_along_major, size_along_minor)``.  A sweep of
+    candidate angles is plenty for a proxy box and avoids a convex-hull pass.
+
+    ``yaw`` is in the three.js sense: rotating a mesh by ``rotation.y = yaw``
+    lines its local ``+x`` up with the rectangle's major axis, and ``ext_a`` is
+    the extent along it.  Rotating about
+    ``+y`` sends local ``+x`` to world ``(cos yaw, 0, -sin yaw)``, so the yaw is
+    the negative of the sweep angle, which measures from ``+x`` towards ``+z``.
     """
     centre = xz.mean(axis=0)
     centred = xz - centre
@@ -135,8 +141,13 @@ def _oriented_footprint(xz: np.ndarray) -> tuple[np.ndarray, float, float, float
             mid = centre + mid_local @ rot
             best = (angle, area, float(ext[0]), float(ext[1]), mid)
     angle, _, ext_a, ext_b, mid = best
-    # yaw rotates world +x onto the rectangle's major axis
-    return mid, angle, ext_a, ext_b
+    yaw = -angle
+    if ext_a < ext_b:
+        # The sweep landed on the minor axis; name the major one first and turn
+        # the yaw a quarter turn so local +x still points along it.
+        ext_a, ext_b = ext_b, ext_a
+        yaw += math.pi / 2.0
+    return mid, yaw, ext_a, ext_b
 
 
 def _classify(points: np.ndarray, ext_a: float, ext_b: float) -> str:
