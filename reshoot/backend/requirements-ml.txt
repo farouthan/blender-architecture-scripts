@@ -1,0 +1,19 @@
+# Optional heavy backends.  Install these to swap the geometric fallbacks for
+# the real networks:
+#
+#   * Depth Anything V2      -> torch + transformers
+#   * keypoint lifting       -> torchvision
+#   * ControlNet img2img     -> diffusers + accelerate
+#
+# Install a torch build that matches your GPU first; see https://pytorch.org.
+# 4D-Humans / HMR 2.0 is installed separately from its own repository, then
+# pointed at with RESHOOT_HMR2_CHECKPOINT:
+#
+#   pip install git+https://github.com/shubham-goel/4D-Humans.git
+#
+torch>=2.1
+torchvision>=0.16
+transformers>=4.39
+diffusers>=0.27
+accelerate>=0.27
+safetensors>=0.4
